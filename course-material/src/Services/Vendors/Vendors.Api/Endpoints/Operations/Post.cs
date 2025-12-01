@@ -10,7 +10,7 @@ namespace Vendors.Api.Endpoints.Operations;
 public static class Post
 {
     public static async Task<Created<CreateVendorResponseModel>> PerformAddVendorAsync(CreateVendorRequestModel request,
-        [LoadUserInfo] RequesterInfo userInfo,
+        //[LoadUserInfo] RequesterInfo userInfo,
         IMessageBus messageBus)
     {
         var command = CreateVendor.FromRequest(request, Guid.NewGuid());

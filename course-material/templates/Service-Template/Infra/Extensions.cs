@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Wolverine;
 using Wolverine.Marten;
 
-namespace **NameSpace**.Api.Infra;
+namespace {{ namespace }}.Infra;
 
 public static class Extensions
 {
-    private static string CorsPolicyName => Assembly.GetCallingAssembly().GetName().Name ??= "Api";
+    private static string CorsPolicyName => Assembly.GetCallingAssembly().GetName().Name ??= "{{namespace}}";
 
     extension(WebApplicationBuilder builder)
     {
@@ -31,6 +31,8 @@ public static class Extensions
 
         public WebApplicationBuilder AddCorsForDevelopment()
         {
+            if(builder.Environment.IsDevelopment() == false)
+                return builder;
             builder.Services.AddCors(corsOptions =>
             {
                 corsOptions.AddPolicy(CorsPolicyName, pol =>
@@ -52,10 +54,16 @@ public static class Extensions
         /// <returns></returns>
         public WebApplicationBuilder AddDevelopmentOpenApiGeneration(string apiName, string apiVersion)
         {
-            builder.Services.AddOpenApi(apiName + apiVersion,
-                options => { options.AddDocumentTransformer<VendorsOpenApiTransform>(); });
-            builder.Services.AddOpenApi($"{apiName}.bff.{apiVersion}",
-                options => { options.AddDocumentTransformer<BffPathTransformer>(); });
+            if (!builder.Environment.IsDevelopment()) return builder;
+            var baseVersion = $"{apiName}.{apiVersion}";
+            var bffVersion = $"{apiName}.bff.{apiVersion}";
+
+            builder.Services.AddOpenApi(baseVersion,
+                options => options.AddDocumentTransformer<ServiceOpenApiTransform>());
+
+            builder.Services.AddOpenApi(bffVersion,
+                (options) => options.AddDocumentTransformer<ServiceBffPathTransformer>());
+
             return builder;
         }
     }
@@ -64,12 +72,10 @@ public static class Extensions
     {
         public WebApplication MapOpenApiForDevelopment()
         {
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseCors(CorsPolicyName);
+            if (!app.Environment.IsDevelopment()) return app;
+            app.UseCors(CorsPolicyName);
 
-                app.MapOpenApi().AllowAnonymous();
-            }
+            app.MapOpenApi("/openapi/{documentName}.json").AllowAnonymous();
 
             return app;
         }

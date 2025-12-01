@@ -23,7 +23,7 @@ public class HttpBindableUserInformation<T> : IBindableFromHttpContext<T>
             {
                 var userInfo = await provideUser.LoadAsync(context.RequestAborted);
                 return (T)userInfo;
-               
+
             }
             default:
             {
@@ -36,3 +36,4 @@ public class HttpBindableUserInformation<T> : IBindableFromHttpContext<T>
             }
         }
     }
+}

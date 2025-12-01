@@ -14,7 +14,6 @@ public class VendorsBaseFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Test");
         postgres = new PostgreSqlBuilder()
             .WithImage("postgres:17.5-bullseye")
             .WithDatabase("vendors")
