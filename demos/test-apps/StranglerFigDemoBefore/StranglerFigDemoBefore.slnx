@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AppHost/AppHost.csproj" />
+  <Project Path="BigService.Api/BigService.Api.csproj" />
+  <Project Path="ServiceDefaults/ServiceDefaults.csproj" />
+</Solution>

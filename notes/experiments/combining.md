@@ -1,4 +1,9 @@
+# Combining OpenApi Docs 
 
+Thinking about how these could be combined for the BFF.  This is *terrible* code, but keeping it to keep the thought alive.
+
+
+## The Endpoint
 
 
 ```csharp
@@ -28,7 +33,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 ```
-
+## The Document Provider 
 
 ```csharp
 public class CombiningFilesTransform : IOpenApiDocumentProvider
